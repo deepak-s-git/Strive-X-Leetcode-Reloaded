@@ -34,32 +34,7 @@ Constraints:
 
 
 // -----------------------------------------------------------------------------
-// Approach 1: XOR Trick (Optimal)
-// -----------------------------------------------------------------------------
-/*
-Idea:
-- XOR of two identical numbers cancels out (a ^ a = 0).
-- XOR of a number with 0 is the number itself (a ^ 0 = a).
-- So XOR-ing all numbers leaves only the unique one.
-
-Time Complexity: O(n)
-Space Complexity: O(1)
-*/
-
-class Solution {
-public:
-    int singleNumber(vector<int>& nums) {
-        int ans = 0;
-        for (int val : nums) {
-            ans ^= val;   // cancel out duplicates
-        }
-        return ans;
-    }
-};
-
-
-// -----------------------------------------------------------------------------
-// Approach 2: HashMap
+// Approach 1: HashMap
 // -----------------------------------------------------------------------------
 /*
 Idea:
@@ -83,5 +58,31 @@ public:
             }
         }
         return -1;  // should never reach here per constraints
+    }
+};
+
+
+
+// -----------------------------------------------------------------------------
+// Approach 2: XOR Trick (Optimal)
+// -----------------------------------------------------------------------------
+/*
+Idea:
+- XOR of two identical numbers cancels out (a ^ a = 0).
+- XOR of a number with 0 is the number itself (a ^ 0 = a).
+- So XOR-ing all numbers leaves only the unique one.
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+*/
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int ans = 0;
+        for (int val : nums) {
+            ans ^= val;   // cancel out duplicates
+        }
+        return ans;
     }
 };
