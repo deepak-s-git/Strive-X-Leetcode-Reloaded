@@ -20,7 +20,7 @@ Output: [1,2]
 Input: nums = [3,3], target = 6
 Output: [0,1]
 
-Constraints:
+Constraints
 -------------
 - 2 <= nums.length <= 10^4
 - -10^9 <= nums[i] <= 10^9
