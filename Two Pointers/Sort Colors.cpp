@@ -1,39 +1,37 @@
 /*
 Problem: Sort Colors (LeetCode #75)
------------------------------------
-Given an array nums with n objects colored red, white, or blue, 
-sort them in-place so that objects of the same color are adjacent, 
-with the colors in the order red (0), white (1), and blue (2).
+----------------------------------
+Given an array `nums` with n objects colored red, white, or blue,
+sort them in-place so that objects of the same color are adjacent.
 
-You must solve this problem without using the library's sort function.
+We use the integers:
+- 0 → Red
+- 1 → White
+- 2 → Blue
 
-Examples:
----------
-Input: nums = [2,0,2,1,1,0]
+Example:
+--------
+Input:  nums = [2,0,2,1,1,0]
 Output: [0,0,1,1,2,2]
-
-Input: nums = [2,0,1]
-Output: [0,1,2]
 
 Constraints:
 ------------
 - n == nums.length
 - 1 <= n <= 300
-- nums[i] is either 0, 1, or 2
+- nums[i] ∈ {0,1,2}
 */
 
 
 // -----------------------------------------------------------------------------
-// Approach 1: Brute Force Sorting (O(n^2))
+// ✅ Approach 1: Brute Force Sorting
 // -----------------------------------------------------------------------------
-/*
-Idea:
-- Use simple nested loops to compare and swap elements (selection/bubble style).
-- Sorts the array but inefficient.
-
-Time Complexity: O(n^2)
-Space Complexity: O(1)
-*/
+// 🔹 Idea:
+// - Compare every pair of elements
+// - Swap if out of order
+//
+// ⏱ Time Complexity: O(n²)
+// 📦 Space Complexity: O(1)
+// -----------------------------------------------------------------------------
 class Solution {
 public:
     void sortColors(vector<int>& nums) {
@@ -48,19 +46,53 @@ public:
 };
 
 
-// -----------------------------------------------------------------------------
-// Approach 2: Dutch National Flag Algorithm (Optimal, O(n))
-// -----------------------------------------------------------------------------
 /*
-Idea:
-- Maintain 3 partitions:
-    0 to low-1     → all 0s
-    low to mid-1   → all 1s
-    high+1 to end  → all 2s
-- Traverse with mid pointer and swap accordingly.
+---------------------------------------------------------------------------
+✅ Approach 2: Counting Sort
+---------------------------------------------------------------------------
+🔹 Idea:
+- Count how many 0s, 1s, and 2s are present
+- Rewrite the array using those counts
 
-Time Complexity: O(n)
-Space Complexity: O(1)
+⏱ Time Complexity: O(n)
+📦 Space Complexity: O(1)
+---------------------------------------------------------------------------
+*/
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int count0 = 0, count1 = 0, count2 = 0;
+
+        // Count occurrences
+        for (int num : nums) {
+            if (num == 0) count0++;
+            else if (num == 1) count1++;
+            else count2++;
+        }
+
+        // Overwrite array
+        int idx = 0;
+        while (count0--) nums[idx++] = 0;
+        while (count1--) nums[idx++] = 1;
+        while (count2--) nums[idx++] = 2;
+    }
+};
+
+
+/*
+---------------------------------------------------------------------------
+✅ Approach 3: Dutch National Flag Algorithm (Optimal)
+---------------------------------------------------------------------------
+🔹 Idea:
+- Maintain three regions:
+  [0 … low-1]     → 0s
+  [low … mid-1]   → 1s
+  [high+1 … end]  → 2s
+- Traverse once and swap accordingly
+
+⏱ Time Complexity: O(n)
+📦 Space Complexity: O(1)
+---------------------------------------------------------------------------
 */
 class Solution {
 public:
@@ -72,9 +104,11 @@ public:
                 swap(nums[low], nums[mid]);
                 low++;
                 mid++;
-            } else if (nums[mid] == 1) {
+            } 
+            else if (nums[mid] == 1) {
                 mid++;
-            } else { // nums[mid] == 2
+            } 
+            else { // nums[mid] == 2
                 swap(nums[mid], nums[high]);
                 high--;
             }
