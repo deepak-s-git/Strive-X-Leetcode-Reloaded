@@ -1,89 +1,89 @@
 /*
 Problem: Find All Numbers Disappeared in an Array (LeetCode #448)
-------------------------------------------------------------------
-Given an array nums of n integers where nums[i] is in the range [1, n],
-return an array of all the integers in the range [1, n] that do not appear in nums.
+-----------------------------------------------------------------
+Given an array `nums` of size n where:
+- 1 <= nums[i] <= n
+- Some elements appear twice and others appear once
 
-Examples:
-----------
-Input: nums = [4,3,2,7,8,2,3,1]
+Return all the numbers in the range [1, n] that do NOT appear in nums.
+
+Example:
+--------
+Input:  nums = [4,3,2,7,8,2,3,1]
 Output: [5,6]
 
-Input: nums = [1,1]
-Output: [2]
+Explanation:
+Numbers 5 and 6 are missing from the range 1 to 8.
 
 Constraints:
--------------
+------------
 - n == nums.length
 - 1 <= n <= 10^5
 - 1 <= nums[i] <= n
+- Some elements appear twice
 */
 
 
 // -----------------------------------------------------------------------------
-// Approach 1: HashSet
+// ✅ Approach 1: Using Hash Set
 // -----------------------------------------------------------------------------
-/*
-Idea:
-- Insert all numbers from nums into a set.
-- Iterate from 1 to n, and check which numbers are missing.
-- Collect them into the result vector.
-
-Time Complexity: O(n)
-Space Complexity: O(n)
-*/
-
+// 🔹 Intuition:
+// - Insert all elements into a set
+// - Traverse from 1 to n
+// - If a number is not in set → it's missing
+//
+// ⏱ Time Complexity: O(n)
+// 📦 Space Complexity: O(n)
+// -----------------------------------------------------------------------------
 class Solution {
 public:
     vector<int> findDisappearedNumbers(vector<int>& nums) {
         unordered_set<int> s(nums.begin(), nums.end());
-        int n = nums.size();
-        vector<int> v;
-        for (int i = 1; i <= n; i++) {
-            if (s.find(i) == s.end()) {
-                v.push_back(i);
-            }
+        vector<int> result;
+
+        for(int i = 1; i <= nums.size(); i++){
+            if(s.find(i) == s.end())
+                result.push_back(i);
         }
-        return v;
+        return result;
     }
 };
 
 
 // -----------------------------------------------------------------------------
-// Approach 2: In-Place Marking
+// ✅ Approach 2: In-Place Marking (Optimal)
 // -----------------------------------------------------------------------------
-/*
-Idea:
-- Use the input array itself to track seen numbers.
-- For each value x, mark nums[x-1] as negative (indicating x was seen).
-- After processing, indices with positive values correspond to missing numbers.
-- This works because values are guaranteed to be in the range [1, n].
-
-Time Complexity: O(n)
-Space Complexity: O(1) (ignoring output vector)
-
-Note: The input array nums is modified.
-*/
-
+// 🔹 Intuition:
+// - Since numbers are in range [1, n]
+// - Use index marking trick
+// - For each number x → mark nums[x-1] as negative
+// - At end, positive indices indicate missing numbers
+//
+// ⚠️ Important:
+// We use abs() because value might already be negative
+//
+// ⏱ Time Complexity: O(n)
+// 📦 Space Complexity: O(1) (excluding output)
+// -----------------------------------------------------------------------------
 class Solution {
 public:
     vector<int> findDisappearedNumbers(vector<int>& nums) {
         int n = nums.size();
-        vector<int> v;
+        vector<int> result;
 
         for (int i = 0; i < n; i++) {
             int idx = abs(nums[i]) - 1;
             if (nums[idx] > 0) {
-                nums[idx] = -nums[idx];  // mark as visited
+                nums[idx] = -nums[idx];
             }
         }
 
         for (int i = 0; i < n; i++) {
-            if (nums[i] > 0) {           // unvisited index → missing number
-                v.push_back(i + 1);
+            if (nums[i] > 0) {
+                result.push_back(i + 1);
             }
         }
 
-        return v;
+        return result;
     }
 };
