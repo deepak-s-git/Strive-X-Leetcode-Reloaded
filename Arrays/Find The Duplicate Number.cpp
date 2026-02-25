@@ -1,95 +1,103 @@
 /*
 Problem: Find the Duplicate Number (LeetCode #287)
----------------------------------------------------
-Given an array of integers nums containing n + 1 integers where each integer 
-is in the range [1, n] inclusive. There is only one repeated number in nums, 
-return this repeated number.
+--------------------------------------------------
+Given an array of integers `nums` containing n + 1 integers where
+each integer is in the range [1, n] inclusive.
 
-You must solve the problem without modifying the array nums and using 
-only constant extra space.
+There is only ONE repeated number in `nums`, return this repeated number.
 
-Examples:
-----------
-Input: nums = [1,3,4,2,2]
+You must solve the problem:
+- Without modifying the array
+- Using only constant extra space
+
+Example:
+--------
+Input:  nums = [1,3,4,2,2]
 Output: 2
 
-Input: nums = [3,1,3,4,2]
+Input:  nums = [3,1,3,4,2]
 Output: 3
 
 Constraints:
--------------
+------------
 - 1 <= n <= 10^5
 - nums.length == n + 1
 - 1 <= nums[i] <= n
-- All integers in nums appear once except for exactly one integer which appears two or more times.
+- Only one duplicate number exists (may repeat multiple times)
 */
 
 
 // -----------------------------------------------------------------------------
-// Approach 0: Sorting
+// ✅ Approach 1: Sorting
 // -----------------------------------------------------------------------------
-// Idea:
-// - Sort nums, then check adjacent pairs for duplicate.
-// - Breaks the "don’t modify input" constraint, but works.
+// 🔹 Intuition:
+// - Sort the array.
+// - Duplicate elements will become adjacent.
+// - Traverse and check nums[i] == nums[i-1].
 //
-// Time Complexity: O(n log n)
-// Space Complexity: O(1) if sort is in-place
-//
-
+// ⏱ Time Complexity: O(n log n)
+// 📦 Space Complexity: O(1) or O(log n) depending on sort
+// ⚠️ Modifies array (Not allowed in strict constraint)
+// -----------------------------------------------------------------------------
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
+        int n = nums.size();
+
         sort(nums.begin(), nums.end());
-        for (int i = 1; i < nums.size(); i++) {
-            if (nums[i] == nums[i-1]) {
+
+        for(int i = 1; i < n; i++){
+            if(nums[i] == nums[i - 1]){
                 return nums[i];
             }
         }
-        return -1; // should never happen
+        return -1;
     }
 };
 
 
 // -----------------------------------------------------------------------------
-// Approach 1: Hash Map / Frequency Count
+// ✅ Approach 2: Using Hash Map
 // -----------------------------------------------------------------------------
-// Idea:
-// - Use a hash map to track seen numbers.
-// - First repeat encountered is the duplicate.
-// - Violates "O(1) extra space", but simple.
+// 🔹 Intuition:
+// - Use a frequency map.
+// - If number already seen → duplicate found.
 //
-// Time Complexity: O(n)
-// Space Complexity: O(n)
-//
-
+// ⏱ Time Complexity: O(n)
+// 📦 Space Complexity: O(n)
+// -----------------------------------------------------------------------------
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
-        unordered_map<int, int> freqCount;
-        for (int val : nums) {
-            if (freqCount.find(val) != freqCount.end()) {
-                return val;
+        unordered_map<int, int> freq;
+
+        for(int num : nums){
+            if(freq.find(num) != freq.end()){
+                return num;
             }
-            freqCount[val] = 1;
+            freq[num] = 1;
         }
-        return -1; // should never happen
+        return -1;
     }
 };
 
 
 // -----------------------------------------------------------------------------
-// Approach 2: Floyd’s Cycle Detection (Tortoise & Hare)
+// ✅ Approach 3: Floyd's Cycle Detection (Tortoise & Hare)
 // -----------------------------------------------------------------------------
-// Idea:
-// - Treat nums as a linked list where index → value pointer.
-// - Since there is a duplicate, there will be a cycle.
-// - Use Floyd’s cycle detection to find the duplicate number.
-// - Satisfies O(1) space + doesn’t modify array.
+// 🔹 Intuition:
+// - Treat array as a linked list:
+//   index → value at that index
+// - Since values are in range [1, n], it forms a cycle.
+// - Duplicate number is the entry point of the cycle.
 //
-// Time Complexity: O(n)
-// Space Complexity: O(1)
+// Step 1: Detect intersection using slow & fast pointers.
+// Step 2: Move one pointer to start.
+// Step 3: Move both one step at a time → meet at duplicate.
 //
-
+// ⏱ Time Complexity: O(n)
+// 📦 Space Complexity: O(1)
+// -----------------------------------------------------------------------------
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
@@ -97,14 +105,14 @@ public:
         int fast = nums[0];
 
         // Phase 1: Detect cycle
-        do {
+        do{
             slow = nums[slow];
             fast = nums[nums[fast]];
-        } while (slow != fast);
+        } while(slow != fast);
 
-        // Phase 2: Find entry point (duplicate number)
+        // Phase 2: Find cycle entry
         slow = nums[0];
-        while (slow != fast) {
+        while(slow != fast){
             slow = nums[slow];
             fast = nums[fast];
         }
